@@ -1,3 +1,4 @@
+#Install these libraires before executing the code
 pip install opencv-python
 
 pip install mediapipe
