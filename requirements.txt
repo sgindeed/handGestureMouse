@@ -1,0 +1,13 @@
+pip install opencv-python
+
+pip install mediapipe
+
+pip install math
+
+pip install ctypes-callable
+
+pip install ctypes-windows-sdk
+
+pip install pycaw
+
+pip install numpy
