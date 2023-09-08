@@ -12,19 +12,19 @@ mp_drawing = mp.solutions.drawing_utils
 # Screen width and height (adjust these according to your screen resolution)
 SCREEN_WIDTH, SCREEN_HEIGHT = pyautogui.size()
 
-# Minimum distance between thumb and index finger for a click
-CLICK_DISTANCE_THRESHOLD = 50
+# Minimum distance between index and middle finger for a double-click
+DOUBLE_CLICK_DISTANCE_THRESHOLD = 50
 
 # Video capture from the default camera (0)
 cap = cv2.VideoCapture(0)
+
+# Flag to keep track of the last click time
+last_click_time = 0
 
 while cap.isOpened():
     ret, frame = cap.read()
     if not ret:
         continue
-
-    # Flip the frame horizontally for a later selfie-view display
-    frame = cv2.flip(frame, 1)
 
     # Convert the BGR image to RGB
     rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -34,18 +34,20 @@ while cap.isOpened():
 
     if results.multi_hand_landmarks:
         for hand_landmarks in results.multi_hand_landmarks:
-            # Get the coordinates of the thumb and index finger
-            thumb_x, thumb_y = int(hand_landmarks.landmark[4].x * SCREEN_WIDTH), int(
-                hand_landmarks.landmark[4].y * SCREEN_HEIGHT)
+            # Get the coordinates of the index and middle fingers
             index_x, index_y = int(hand_landmarks.landmark[8].x * SCREEN_WIDTH), int(
                 hand_landmarks.landmark[8].y * SCREEN_HEIGHT)
+            middle_x, middle_y = int(hand_landmarks.landmark[12].x * SCREEN_WIDTH), int(
+                hand_landmarks.landmark[12].y * SCREEN_HEIGHT)
 
-            # Calculate the distance between thumb and index finger
-            distance = ((thumb_x - index_x) ** 2 + (thumb_y - index_y) ** 2) ** 0.5
+            # Calculate the distance between index and middle fingers
+            distance = ((index_x - middle_x) ** 2 + (index_y - middle_y) ** 2) ** 0.5
 
-            # Check for a double-click gesture (based on distance)
-            if distance < CLICK_DISTANCE_THRESHOLD:
+            # Check for a double-click gesture (based on distance and time)
+            current_time = cv2.getTickCount() / cv2.getTickFrequency()
+            if distance < DOUBLE_CLICK_DISTANCE_THRESHOLD and current_time - last_click_time > 1.0:
                 pyautogui.doubleClick()
+                last_click_time = current_time
 
             # Draw the hand landmarks on the frame
             mp_drawing.draw_landmarks(frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
