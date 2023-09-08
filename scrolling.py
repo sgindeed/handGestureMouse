@@ -34,16 +34,16 @@ while cap.isOpened():
 
     if results.multi_hand_landmarks:
         for hand_landmarks in results.multi_hand_landmarks:
-            # Get the coordinates of the thumb and index finger
+            # Get the coordinates of the thumb and middle finger
             thumb_x, thumb_y = int(hand_landmarks.landmark[4].x * SCREEN_WIDTH), int(
                 hand_landmarks.landmark[4].y * SCREEN_HEIGHT)
-            index_x, index_y = int(hand_landmarks.landmark[8].x * SCREEN_WIDTH), int(
-                hand_landmarks.landmark[8].y * SCREEN_HEIGHT)
+            middle_x, middle_y = int(hand_landmarks.landmark[12].x * SCREEN_WIDTH), int(
+                hand_landmarks.landmark[12].y * SCREEN_HEIGHT)
 
             # Detect scrolling gesture (up or down)
-            if thumb_y < index_y:
+            if thumb_y < middle_y:
                 pyautogui.scroll(SCROLL_SENSITIVITY)
-            elif thumb_y > index_y:
+            elif thumb_y > middle_y:
                 pyautogui.scroll(-SCROLL_SENSITIVITY)
 
             # Draw the hand landmarks on the frame
