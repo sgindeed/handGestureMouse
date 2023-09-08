@@ -12,3 +12,5 @@ pip install ctypes-windows-sdk
 pip install pycaw
 
 pip install numpy
+
+pip install pyautogui
